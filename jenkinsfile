@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+
+    tools {
+      git 'Git'
+      maven 'maven-3.9.6'
+    }
+
+    stages {
+        /*stage('SCM Checkout') {
+            steps {
+
+                echo "---------------------- Checkout Main ------------------------------------------------"
+                // Get some code from a GitHub repository
+                //git(branch: 'main', credentialsId: 'mmmou', url: 'https://github.com/mmkmou/bootcamp-jenkins')
+            }
+        }*/
+
+        stage('Build') {
+            steps {
+                echo "----------------------------Build with Maven------------------------------------------"
+                // Run Maven on a Unix agent.
+                sh 'mvn clean verify -Dmaven.test.skip=true'
+            }
+
+            post {
+                // If Maven was able to run the tests, even if some of the test
+                // failed, record the test results and archive the jar file.
+                success {
+                    archiveArtifacts 'target/*.jar'
+                }
+            }
+        }
+
+        stage('Build docker') {
+            steps {
+                echo "----------------------------Build docker------------------------------------------"
+
+            }
+        }
+    }
+}
