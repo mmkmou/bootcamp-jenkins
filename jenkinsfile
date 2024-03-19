@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    environment {
+      DOCKER_USER = credentials('docker_username')
+      DOCKER_TOKEN = credentials('docker_token')
+    }
+
     tools {
       git 'Git'
       maven 'maven-3.9.6'
@@ -36,8 +41,9 @@ pipeline {
         stage('Build docker') {
             steps {
                 echo "----------------------------Build docker------------------------------------------"
-                sh 'docker pull httpd'
-                sh 'docker images'
+                sh 'docker build -f Dockerfile -t ${env.DOCKER_USER}/transactions:nightly .'
+                sh 'echo ${env.DOCKER_TOKEN} | docker login --username ${env.DOCKER_USER} --password-stdin'
+                sh 'docker push ${env.DOCKER_USER}/transactions:nightly'
             }
         }
     }
