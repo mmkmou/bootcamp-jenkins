@@ -53,7 +53,7 @@ pipeline {
             when {
               allOf {
                   branch "main"
-                  buildingTag()
+                  tag "v*"
               }
             }
 
