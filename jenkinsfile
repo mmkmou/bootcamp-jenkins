@@ -72,7 +72,6 @@ pipeline {
             when {
               allOf {
                   branch "release-*"
-                  buildingTag()
               }
             }
 
