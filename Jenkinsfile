@@ -59,12 +59,9 @@ pipeline {
             }
         }
 
-
         stage('Build docker release') {
             when {
-              allOf {
-                  branch "release-*"
-              }
+              branch "release-*"
             }
 
             steps {
