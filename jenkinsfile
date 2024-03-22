@@ -12,14 +12,24 @@ pipeline {
     }
 
     stages {
-        /*stage('SCM Checkout') {
+        stage('SCM Checkout') {
             steps {
 
                 echo "---------------------- Checkout Main ------------------------------------------------"
                 // Get some code from a GitHub repository
-                //git(branch: 'main', credentialsId: 'mmmou', url: 'https://github.com/mmkmou/bootcamp-jenkins')
+                echo "checked out ${env.BRANCH_NAME} - ${env.TAG_NAME}"
+
             }
-        }*/
+        }
+
+        stage('Code Quality') {
+            steps {
+
+                echo "---------------------- Code QualityMain ------------------------------------------------"
+                echo "We will run sonarQube here"
+
+            }
+        }
 
         stage('Build') {
             steps {
@@ -34,16 +44,43 @@ pipeline {
                 success {
                     echo "${BUILD_ID}"
                     archiveArtifacts 'target/*.jar'
+
                 }
             }
         }
 
-        stage('Build docker') {
+        stage('Build docker main') {
+            when {
+              allOf {
+                  branch "main"
+                  buildingTag()
+              }
+            }
+
             steps {
                 echo "----------------------------Build docker------------------------------------------"
-                sh "docker build -f Dockerfile -t ${env.DOCKER_USER}/transactions:nightly ."
+                sh "docker build -f Dockerfile -t ${env.DOCKER_USER}/transactions ."
+                sh "docker tag ${env.DOCKER_USER}/transactions ${env.DOCKER_USER}/transactions:${env.TAG_NAME}"
                 sh "echo ${env.DOCKER_TOKEN} | docker login --username ${env.DOCKER_USER} --password-stdin"
-                sh "docker push ${env.DOCKER_USER}/transactions:nightly"
+                sh "docker push ${env.DOCKER_USER}/transactions:${env.TAG_NAME}"
+                sh "docker push ${env.DOCKER_USER}/transactions"
+            }
+        }
+
+
+        stage('Build docker release') {
+            when {
+              allOf {
+                  branch "release-*"
+                  buildingTag()
+              }
+            }
+
+            steps {
+                echo "----------------------------Build docker------------------------------------------"
+                sh "docker build -f Dockerfile -t ${env.DOCKER_USER}/transactions:${env.BRANCH_NAME} ."
+                sh "echo ${env.DOCKER_TOKEN} | docker login --username ${env.DOCKER_USER} --password-stdin"
+                sh "docker push ${env.DOCKER_USER}/transactions:${env.BRANCH_NAME}"
             }
         }
     }
