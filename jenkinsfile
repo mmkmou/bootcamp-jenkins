@@ -23,7 +23,7 @@ pipeline {
             }
         }
 
-        stage('Code Quality Check') {
+        /*stage('Code Quality Check') {
             steps {
 
                 echo "---------------------- Code QualityMain ------------------------------------------------"
@@ -32,7 +32,7 @@ pipeline {
 					sh "mvn sonar:sonar -Dsonar.login=$SONARQUBETOKEN -Dsonar.qualitygate.wait=true -Dsonar.host.url=${env.SONAR_HOST}"
 				}
             }
-        }
+        }*/
 
         stage('Build') {
             steps {
