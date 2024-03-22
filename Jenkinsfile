@@ -40,8 +40,6 @@ pipeline {
                 // Run Maven on a Unix agent.
                 sh 'mvn clean verify -Dmaven.test.skip=true'
             }
-
-
         }
 
         stage('Build docker main') {
