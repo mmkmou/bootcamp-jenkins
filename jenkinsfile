@@ -51,10 +51,7 @@ pipeline {
 
         stage('Build docker main') {
             when {
-              allOf {
-                  branch "main"
-                  tag "v*"
-              }
+                tag "v*"
             }
 
             steps {
