@@ -41,15 +41,7 @@ pipeline {
                 sh 'mvn clean verify -Dmaven.test.skip=true'
             }
 
-            post {
-                // If Maven was able to run the tests, even if some of the test
-                // failed, record the test results and archive the jar file.
-                success {
-                    echo "${BUILD_ID}"
-                    archiveArtifacts 'target/*.jar'
 
-                }
-            }
         }
 
         stage('Build docker main') {
@@ -81,6 +73,16 @@ pipeline {
                 sh "echo ${env.DOCKER_TOKEN} | docker login --username ${env.DOCKER_USER} --password-stdin"
                 sh "docker push ${env.DOCKER_USER}/transactions:${env.BRANCH_NAME}"
             }
+        }
+    }
+
+    post {
+        // If Maven was able to run the tests, even if some of the test
+        // failed, record the test results and archive the jar file.
+        success {
+            echo "${BUILD_ID}"
+            archiveArtifacts 'target/*.jar'
+
         }
     }
 }
