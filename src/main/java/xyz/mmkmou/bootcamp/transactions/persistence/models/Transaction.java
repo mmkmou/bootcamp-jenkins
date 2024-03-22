@@ -60,6 +60,9 @@ public class Transaction {
     @Column(nullable = false, updatable = false, columnDefinition = "varchar")
     private String fromPhoneNumber;
 
+    @Column(updatable = false, columnDefinition = "varchar")
+    private String transactionCurrency;
+
 //    @Column(columnDefinition = "integer default 0")
     private SourceEnum transactionSource;
 
