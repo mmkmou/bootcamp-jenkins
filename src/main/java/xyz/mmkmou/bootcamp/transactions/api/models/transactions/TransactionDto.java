@@ -56,5 +56,8 @@ public class TransactionDto {
     @JsonProperty("from")
     private String fromPhoneNumber;
 
+    @JsonProperty("transaction_currency")
+    private String transactionCurrency;
+
 }
 

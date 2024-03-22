@@ -4,6 +4,7 @@ pipeline {
     environment {
       DOCKER_USER = credentials('docker_username')
       DOCKER_TOKEN = credentials('docker_token')
+      SONAR_HOST = "http://159.65.211.146:9000"
     }
 
     tools {
@@ -27,7 +28,9 @@ pipeline {
 
                 echo "---------------------- Code QualityMain ------------------------------------------------"
                 echo "We will run sonarQube here"
-
+                withCredentials([string(credentialsId: 'sonar_token', variable: 'SONARQUBETOKEN')]) {
+					sh "mvn sonar:sonar -Dsonar.login=$SONARQUBETOKEN -Dsonar.qualitygate.wait=true -Dsonar.host.url=${env.SONAR_HOST}"
+				}
             }
         }
 
