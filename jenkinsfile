@@ -22,7 +22,7 @@ pipeline {
             }
         }
 
-        stage('Code Quality') {
+        stage('Code Quality Check') {
             steps {
 
                 echo "---------------------- Code QualityMain ------------------------------------------------"
