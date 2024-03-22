@@ -98,7 +98,7 @@ public class TransactionServicesImpl implements TransactionServices {
             if (fref.length() == 15) {
                 transactions = transactionRepository.findByFref(Long.valueOf(fref));
             } else {
-                String exceptionMessage = "Fref size is not correct : " + fref.length() + " should be 15.";
+                String exceptionMessage = "Fref size is not correct - current length : " + fref.length() + "- current length : 15.";
 //                throw new Exception(exceptionMessage);
                 response = TransactionListResponse.builder()
                         .code(ResponseCode.BAD_REQUEST.getCode())
