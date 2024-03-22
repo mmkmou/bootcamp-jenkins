@@ -4,7 +4,6 @@ pipeline {
     environment {
       DOCKER_USER = credentials('docker_username')
       DOCKER_TOKEN = credentials('docker_token')
-      BUCKET_NAME = "s3://devopscohorte1-test"
     }
 
     tools {
@@ -45,14 +44,7 @@ pipeline {
                 success {
                     echo "${BUILD_ID}"
                     archiveArtifacts 'target/*.jar'
-                    withCredentials([[
-                        $class: 'AmazonWebServicesCredentialsBinding',
-                        credentialsId: "aws_jenkins",
-                        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-                    ]]) {
-                        sh "aws s3 cp target/*.jar target ${env.BUCKET_NAME}"
-                    }
+
                 }
             }
         }
