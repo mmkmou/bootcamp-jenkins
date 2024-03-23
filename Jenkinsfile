@@ -53,14 +53,10 @@ pipeline {
             steps {
                 script {
                     echo "----------------------------Build docker------------------------------------------"
-
                     def dockerImage = "${env.DOCKER_USER}/transactions:${env.TAG_NAME}"
-
-                    sh """
-                        docker build -f Dockerfile -t ${dockerImage} .
-                        echo ${env.DOCKER_TOKEN} | docker login --username ${env.DOCKER_USER} --password-stdin
-                        docker push ${dockerImage}
-                    """
+                    sh "docker build -f Dockerfile -t ${dockerImage} ."
+                    sh "echo ${env.DOCKER_TOKEN} | docker login --username ${env.DOCKER_USER} --password-stdin"
+                    sh "docker push ${dockerImage}"
 
                     def deploymentDir =  ${env.DEPLOYMENT_DIR}
                     if (!fileExists(deploymentDir)) {
@@ -78,32 +74,22 @@ pipeline {
                     // push to baobab-charts repo for argocd automatic/manuel deployment
                     sh """
                         git add main/deployment.yaml
-                        git commit -m "Update image tag for main to ${dockerImage}"
+                        git commit -m "Update image tag for release to ${dockerImage}"
                         git push origin master
                     """
                 }
+
             }
         }
 
         stage('Build docker release') {
             when {
-              anyOf {
-                branch "release-*"
-                branch "develop"
-              }
-
+              branch "release-*"
             }
 
             steps {
                 script {
-                    def tag = ${env.BRANCH_NAME}
-                    def baseFolder = "release"
-                    if ($env.BRANCH_NAME == "develop") {
-                        tag = "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
-                        baseFolder = "develop"
-                    }
-
-                    def dockerImage = "${env.DOCKER_USER}/transactions:${tag}"
+                    def dockerImage = "${env.DOCKER_USER}/transactions:${env.BRANCH_NAME}"
                     echo "----------------------------Build docker------------------------------------------"
                     sh """
                       docker build -f Dockerfile -t ${dockerImage} .
@@ -118,7 +104,7 @@ pipeline {
 
                     dir(deploymentDir){
                         sh "git pull origin master"
-                        def deploymentFilePath = "${baseFolder}/deployment.yaml"
+                        def deploymentFilePath = "release/deployment.yaml"
                         def deploymentContent = readFile(deploymentFilePath).trim()
                         def updatedContent = deploymentContent.replaceAll(/image:.*transactions.*/, "image: ${dockerImage}")
                         writeFile(file: deploymentFilePath, text: updatedContent)
@@ -126,8 +112,8 @@ pipeline {
 
                     // push to baobab-charts repo for argocd automatic/manuel deployment
                     sh """
-                        git add ${baseFolder}/deployment.yaml
-                        git commit -m "Update image tag for release to ${env.DOCKER_USER}/transactions:${env.BRANCH_NAME}"
+                        git add release/deployment.yaml
+                        git commit -m "Update image tag for release to ${dockerImage}"
                         git push origin master
                     """
                 }
