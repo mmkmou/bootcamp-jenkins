@@ -106,7 +106,7 @@ pipeline {
                 script {
                     def tag = ${env.BRANCH_NAME}
                     def baseFolder = "release"
-                    if ($env.BRANCH_NAME = develop) {
+                    if ($env.BRANCH_NAME == "develop") {
                         tag = "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
                         baseFolder = "develop"
                     }
