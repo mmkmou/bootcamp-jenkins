@@ -52,20 +52,17 @@ pipeline {
 
             steps {
                 script {
-                    echo "----------------------------Build docker------------------------------------------"
                     def dockerImage = "${env.DOCKER_USER}/transactions:${env.TAG_NAME}"
+                    echo "---------------------------- Build docker ${dockerImage} ------------------------------------------"
                     sh "docker build -f Dockerfile -t ${dockerImage} ."
                     sh "echo ${env.DOCKER_TOKEN} | docker login --username ${env.DOCKER_USER} --password-stdin"
                     sh "docker push ${dockerImage}"
 
-                    echo "---- Im here -----"
                     def deploymentDir =  "../${env.DEPLOYMENT_DIR}"
                     if (!fileExists(deploymentDir)) {
-                        echo "---- inside check file fileExists here -----"
                         sh "git clone ${env.DEPLOYMENT_REPO} ${deploymentDir}"
                     }
 
-                    echo "---- now here -----"
                     dir(deploymentDir){
                         sh "git pull origin main"
                         def deploymentFilePath = "main/deployment.yaml"
@@ -95,20 +92,18 @@ pipeline {
             steps {
                 script {
                     def dockerImage = "${env.DOCKER_USER}/transactions:${env.BRANCH_NAME}"
-                    echo "----------------------------Build docker------------------------------------------"
+                    echo "----------------------------Build docker ${dockerImage}------------------------------------------"
                     sh """
                       docker build -f Dockerfile -t ${dockerImage} .
                       echo ${env.DOCKER_TOKEN} | docker login --username ${env.DOCKER_USER} --password-stdin
                       docker push ${dockerImage}
                     """
-                     echo "---- Im here -----"
+
                     def deploymentDir =  "../${env.DEPLOYMENT_DIR}"
                     if (!fileExists(deploymentDir)) {
-                        echo "---- inside check file fileExists here -----"
                         sh "git clone ${env.DEPLOYMENT_REPO} ${deploymentDir}"
                     }
 
-                    echo "---- now here -----"
                     dir(deploymentDir){
                         sh "git pull origin main"
                         def deploymentFilePath = "release/deployment.yaml"
