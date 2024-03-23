@@ -57,26 +57,6 @@ pipeline {
                     sh "docker build -f Dockerfile -t ${dockerImage} ."
                     sh "echo ${env.DOCKER_TOKEN} | docker login --username ${env.DOCKER_USER} --password-stdin"
                     sh "docker push ${dockerImage}"
-
-                    def deploymentDir =  "../${env.DEPLOYMENT_DIR}"
-                    if (!fileExists(deploymentDir)) {
-                        sh "git clone ${env.DEPLOYMENT_REPO} ${deploymentDir}"
-                    }
-
-                    dir(deploymentDir){
-                        sh "git pull origin main"
-                        def deploymentFilePath = "main/deployment.yaml"
-                        def deploymentContent = readFile(deploymentFilePath).trim()
-                        def updatedContent = deploymentContent.replaceAll(/image:.*transactions.*/, "image: ${dockerImage}")
-                        writeFile(file: deploymentFilePath, text: updatedContent)
-
-                        sh """
-                            git add main/deployment.yaml
-                            git commit -m "Update image tag for release to ${dockerImage}"
-                            git push origin main
-                        """
-                    }
-
                     // push to baobab-charts repo for argocd automatic/manuel deployment
 
                 }
@@ -98,26 +78,6 @@ pipeline {
                       echo ${env.DOCKER_TOKEN} | docker login --username ${env.DOCKER_USER} --password-stdin
                       docker push ${dockerImage}
                     """
-
-                    def deploymentDir =  "../${env.DEPLOYMENT_DIR}"
-                    if (!fileExists(deploymentDir)) {
-                        sh "git clone ${env.DEPLOYMENT_REPO} ${deploymentDir}"
-                    }
-
-                    dir(deploymentDir){
-                        sh "git pull origin main"
-                        def deploymentFilePath = "release/deployment.yaml"
-                        def deploymentContent = readFile(deploymentFilePath).trim()
-                        def updatedContent = deploymentContent.replaceAll(/image:.*transactions.*/, "image: ${dockerImage}")
-                        writeFile(file: deploymentFilePath, text: updatedContent)
-
-                        sh """
-                            pwd
-                            git add release/deployment.yaml
-                            git commit -m "Update image tag for release to ${dockerImage}"
-                            git push origin main
-                        """
-                    }
 
                     // push to baobab-charts repo for argocd automatic/manuel deployment
 
