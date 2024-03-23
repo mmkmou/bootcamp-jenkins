@@ -67,7 +67,7 @@ pipeline {
 
                     echo "---- now here -----"
                     dir(deploymentDir){
-                        sh "git pull origin master"
+                        sh "git pull origin main"
                         def deploymentFilePath = "main/deployment.yaml"
                         def deploymentContent = readFile(deploymentFilePath).trim()
                         def updatedContent = deploymentContent.replaceAll(/image:.*transactions.*/, "image: ${dockerImage}")
@@ -78,7 +78,7 @@ pipeline {
                     sh """
                         git add main/deployment.yaml
                         git commit -m "Update image tag for release to ${dockerImage}"
-                        git push origin master
+                        git push origin main
                     """
                 }
 
@@ -108,7 +108,7 @@ pipeline {
 
                     echo "---- now here -----"
                     dir(deploymentDir){
-                        sh "git pull origin master"
+                        sh "git pull origin main"
                         def deploymentFilePath = "release/deployment.yaml"
                         def deploymentContent = readFile(deploymentFilePath).trim()
                         def updatedContent = deploymentContent.replaceAll(/image:.*transactions.*/, "image: ${dockerImage}")
@@ -119,7 +119,7 @@ pipeline {
                     sh """
                         git add release/deployment.yaml
                         git commit -m "Update image tag for release to ${dockerImage}"
-                        git push origin master
+                        git push origin main
                     """
                 }
 
