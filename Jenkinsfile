@@ -109,7 +109,7 @@ pipeline {
                     echo "---- now here -----"
                     dir(deploymentDir){
                         sh "git pull origin main"
-                        def deploymentFilePath = "release/deployment.yaml"
+                        def deploymentFilePath = "preprod/deployment.yaml"
                         def deploymentContent = readFile(deploymentFilePath).trim()
                         def updatedContent = deploymentContent.replaceAll(/image:.*transactions.*/, "image: ${dockerImage}")
                         writeFile(file: deploymentFilePath, text: updatedContent)
