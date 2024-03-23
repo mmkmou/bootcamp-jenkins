@@ -34,5 +34,12 @@ pipeline {
                 }
             }
         }
+
+
+        stage('Build docker') {
+            steps {
+                sh 'docker build -f Dockerfile -t transactions:${BRANCH_NAME} .'
+            }
+        }
     }
 }
