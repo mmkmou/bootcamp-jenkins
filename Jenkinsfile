@@ -117,7 +117,7 @@ pipeline {
 
                     // push to baobab-charts repo for argocd automatic/manuel deployment
                     sh """
-                        git add release/deployment.yaml
+                        git add preprod/deployment.yaml
                         git commit -m "Update image tag for release to ${dockerImage}"
                         git push origin main
                     """
