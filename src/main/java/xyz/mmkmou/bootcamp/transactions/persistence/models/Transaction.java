@@ -19,7 +19,6 @@ import java.util.UUID;
 @Builder
 @Table(
         name = "transactions",
-        schema = "txns",
         uniqueConstraints={
                 @UniqueConstraint(columnNames = {"ref", "fromPhoneNumber"})
         }
