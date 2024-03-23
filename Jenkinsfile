@@ -72,14 +72,16 @@ pipeline {
                         def deploymentContent = readFile(deploymentFilePath).trim()
                         def updatedContent = deploymentContent.replaceAll(/image:.*transactions.*/, "image: ${dockerImage}")
                         writeFile(file: deploymentFilePath, text: updatedContent)
+
+                        sh """
+                            git add main/deployment.yaml
+                            git commit -m "Update image tag for release to ${dockerImage}"
+                            git push origin main
+                        """
                     }
 
                     // push to baobab-charts repo for argocd automatic/manuel deployment
-                    sh """
-                        git add main/deployment.yaml
-                        git commit -m "Update image tag for release to ${dockerImage}"
-                        git push origin main
-                    """
+
                 }
 
             }
@@ -113,15 +115,17 @@ pipeline {
                         def deploymentContent = readFile(deploymentFilePath).trim()
                         def updatedContent = deploymentContent.replaceAll(/image:.*transactions.*/, "image: ${dockerImage}")
                         writeFile(file: deploymentFilePath, text: updatedContent)
+
+                        sh """
+                            pwd
+                            git add release/deployment.yaml
+                            git commit -m "Update image tag for release to ${dockerImage}"
+                            git push origin main
+                        """
                     }
 
                     // push to baobab-charts repo for argocd automatic/manuel deployment
-                    sh """
-                        pwd
-                        git add release/deployment.yaml
-                        git commit -m "Update image tag for release to ${dockerImage}"
-                        git push origin main
-                    """
+
                 }
 
             }
