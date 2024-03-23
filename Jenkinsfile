@@ -83,14 +83,6 @@ pipeline {
                     """
                 }
             }
-
-            post {
-                success {
-                    script {
-
-                    }
-                }
-            }
         }
 
         stage('Build docker release') {
