@@ -6,7 +6,7 @@ pipeline {
       DOCKER_TOKEN = credentials('docker_token')
       SONAR_HOST = "http://159.65.211.146:9000"
       DEPLOYMENT_DIR = "deployment"
-      DEPLOYMENT_REPO = "https://github.com/mmkmou/jenkins-k8s.git"
+      DEPLOYMENT_REPO = "git@github.com:mmkmou/jenkins-k8s.git"
       APPLICATION_NAME = "transactions"
     }
 
