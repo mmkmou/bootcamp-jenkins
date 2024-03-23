@@ -58,11 +58,14 @@ pipeline {
                     sh "echo ${env.DOCKER_TOKEN} | docker login --username ${env.DOCKER_USER} --password-stdin"
                     sh "docker push ${dockerImage}"
 
+                    echo "---- Im here -----"
                     def deploymentDir =  ${env.DEPLOYMENT_DIR}
                     if (!fileExists(deploymentDir)) {
+                        echo "---- inside check file fileExists here -----"
                         sh "git clone ${env.DEPLOYMENT_REPO} ${deploymentDir}"
                     }
 
+                    echo "---- now here -----"
                     dir(deploymentDir){
                         sh "git pull origin master"
                         def deploymentFilePath = "main/deployment.yaml"
