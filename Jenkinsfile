@@ -59,7 +59,7 @@ pipeline {
                     sh "docker push ${dockerImage}"
 
                     echo "---- Im here -----"
-                    def deploymentDir =  "${env.DEPLOYMENT_DIR}"
+                    def deploymentDir =  "../${env.DEPLOYMENT_DIR}"
                     if (!fileExists(deploymentDir)) {
                         echo "---- inside check file fileExists here -----"
                         sh "git clone ${env.DEPLOYMENT_REPO} ${deploymentDir}"
@@ -100,7 +100,7 @@ pipeline {
                       docker push ${dockerImage}
                     """
                      echo "---- Im here -----"
-                    def deploymentDir =  "${env.DEPLOYMENT_DIR}"
+                    def deploymentDir =  "../${env.DEPLOYMENT_DIR}"
                     if (!fileExists(deploymentDir)) {
                         echo "---- inside check file fileExists here -----"
                         sh "git clone ${env.DEPLOYMENT_REPO} ${deploymentDir}"
